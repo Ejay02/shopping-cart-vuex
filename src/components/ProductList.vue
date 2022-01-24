@@ -5,7 +5,7 @@
     </h1>
     <img v-if="loading" src="https://i.imgur.com/JfPpwOA.gif" />
     <ul v-else>
-      <li v-for="product in products">
+      <li v-for="product in products" :key="product.id">
         {{ product.title }} - {{ product.price | currency }} -
         {{ product.inventory }}
         <button
@@ -30,7 +30,7 @@ export default {
   },
 
   computed: {
-    ...mapState({
+    ...mapState('products',{
       products: state => state.products.items
     }),
 
@@ -41,15 +41,15 @@ export default {
 
   methods: {
     ...mapActions({
-      fetchProducts: "fetchProducts",
-      addProductToCart: "addProductToCart"
+      fetchProducts: "products/fetchProducts",
+      addProductToCart: "cart/addProductToCart"
     })
   },
 
   created() {
     this.loading = true;
-    this.fetchProducts();
-    store.dispatch("fetchProducts").then(() => (this.loading = false));
+    this.fetchProducts()
+   .then(() => (this.loading = false));
   }
 };
 </script>

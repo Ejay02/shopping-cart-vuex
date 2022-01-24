@@ -1,13 +1,17 @@
+import shop from "../../api/shop";
+
 export default {
+  namespaced: true,
+
   state: {
-   items: [],
+    items: [],
     checkoutStatus: null
   },
 
   getters: {
-    cartProducts(state) {
+    cartProducts(state, getters, rootState, rootGetters) {
       return state.items.map(cartItem => {
-        const product = state.products.find(
+        const product = rootState.products.items.find(
           product => product.id === cartItem.id
         );
         return {
@@ -19,7 +23,7 @@ export default {
     },
 
     cartTotal(state, getters) {
-      return getters.itemsProducts.reduce(
+      return getters.cartProducts.reduce(
         (total, product) => total + product.price * product.quantity,
         0
       );
@@ -39,7 +43,7 @@ export default {
     },
 
     setCheckoutStatus(state, status) {
-      state.checkoutStaus = staus;
+      state.checkoutStaus = status;
     },
 
     emptyCart(state) {
@@ -48,8 +52,8 @@ export default {
   },
 
   actions: {
-    addProductToCart({ state, getters, commit }, product) {
-      if (getters.productIsInstock(product)) {
+    addProductToCart({ state, getters, commit, rootState, rootGetters }, product) {
+      if (rootGetters['products/productIsInstock'](product)) {
         const cartItem = state.items.find(item => item.id === product.id);
         // find cart item
         if (!cartItem) {
@@ -59,7 +63,7 @@ export default {
           // increment itwm quantity
           commit("incrementItemQuantity", cartItem);
         }
-        commit("decrementProductInventory", product);
+        commit("products/decrementProductInventory", product, {root:true});
       }
     },
 

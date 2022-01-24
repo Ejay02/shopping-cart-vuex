@@ -1,4 +1,7 @@
+import shop from "../../api/shop";
+
 export default {
+    namespaced: true,
   state: {
     items: []
   },
@@ -16,11 +19,11 @@ export default {
   mutations: {
     setProducts(state, products) {
       // ☝🏽  update products
-      state.products = products;
+      state.items = products;
     },
 
-    decrementProductInventory(state, cartItem) {
-      product.quantity--;
+    decrementProductInventory(state, product) {
+      product.inventory--;
     }
   },
   actions: {
